@@ -1,12 +1,10 @@
-export  interface ISortObject {
-    id:string
-    title :string
-    description :string
-    lessons: {
+import Tutorial from "./Tutorial"
+
+export  interface ISortObject extends Tutorial{
+    lesson: {
         arrWords: IWordSortTutorial[],
-        checkedWord : IWordSortTutorial  [] 
+        checkedWord : IWordSortTutorial[] 
     }
-    transit_time: string
 }
 
 export interface IWordSortTutorial {
@@ -15,9 +13,3 @@ export interface IWordSortTutorial {
     id:string
     styleHandler :boolean
 }
-
-
-export interface Check {
-   
-    
-} 

@@ -12,6 +12,7 @@ import ValidetedFN from '../../../helper/Valideted.FN'
 import { Card, Col, message, Row, Space } from 'antd'
 import { blurStyle, buttonStyle, stockStyle } from './StyleSortTutorial/Style.words'
 import { blob } from 'stream/consumers'
+import { TutorialType } from '../../../enum/Tutorial.type/Tutorial.type'
 
 
 const SortTutorial = () => {
@@ -44,11 +45,12 @@ const SortTutorial = () => {
         id: nanoid(),
         title: '',
         description: '',
-        lessons: {
+        lesson: {
             arrWords: [],
             checkedWord: []
         },
-        transit_time:''
+        transit_time:'',
+        lesson_type: TutorialType.wordsSort
     })
  
     const parseWords = () => {
@@ -60,8 +62,8 @@ const SortTutorial = () => {
 
         })
 
-        setSortObject({...sortObject , lessons: {
-            ...sortObject.lessons , 
+        setSortObject({...sortObject , lesson: {
+            ...sortObject.lesson , 
             arrWords: copyValue
         }})
         
@@ -69,18 +71,18 @@ const SortTutorial = () => {
 
     const addWord = (val:IWordSortTutorial) => {
 
-        const index:number = sortObject.lessons.arrWords.findIndex((obj) => obj.id === val.id)
+        const index:number = sortObject.lesson.arrWords.findIndex((obj) => obj.id === val.id)
 
         if(index >= 0 ) {         
 
             const copy : ISortObject = {...sortObject}
 
-            copy.lessons.arrWords[index] = {...copy.lessons.arrWords[index] ,
+            copy.lesson.arrWords[index] = {...copy.lesson.arrWords[index] ,
                 isDrable:true , 
                 styleHandler: true 
             }
 
-            copy.lessons.checkedWord = [...copy.lessons.checkedWord , {...val ,isDrable:true , 
+            copy.lesson.checkedWord = [...copy.lesson.checkedWord , {...val ,isDrable:true , 
                 styleHandler: true  }]
         
             setSortObject(copy)
@@ -91,7 +93,7 @@ const SortTutorial = () => {
     const editWords = () => {
         const copy: ISortObject = {...sortObject}
 
-        copy.lessons.checkedWord = []
+        copy.lesson.checkedWord = []
         
         setSortObject({...copy})
 
@@ -101,22 +103,22 @@ const SortTutorial = () => {
 
     const removeWord = (val:IWordSortTutorial ) => {
 
-        const index:number = sortObject.lessons.arrWords
+        const index:number = sortObject.lesson.arrWords
             .findIndex((obj) => obj.id === val.id)
 
-        const indexChecked:number = sortObject.lessons.checkedWord
+        const indexChecked:number = sortObject.lesson.checkedWord
             .findIndex((obj) => obj.id === val.id)
 
         if(index >= 0 && indexChecked >= 0) {
 
             const copy : ISortObject = {...sortObject}
 
-            copy.lessons.arrWords[index] = {...val ,
+            copy.lesson.arrWords[index] = {...val ,
                 isDrable:false , 
                 styleHandler: false 
             }
 
-            copy.lessons.checkedWord.splice(indexChecked , 1)
+            copy.lesson.checkedWord.splice(indexChecked , 1)
 
             setSortObject(copy)
 
@@ -145,15 +147,15 @@ const SortTutorial = () => {
                 
                 setModal(!showModal)
                 sucssesMessage('Туториал сохранен')
-                return setSortObject({
+                return setSortObject({...sortObject,
                     id: nanoid(),
                     title: '',
                     description: '',
-                    lessons: {
+                    lesson: {
                         arrWords: [],
                         checkedWord: []
                     },
-                    transit_time:''
+                    transit_time:'',
                 })
    
             } 
@@ -180,7 +182,7 @@ const SortTutorial = () => {
 
     const validetedSortObject = () => {
 
-        const copy: IWordSortTutorial[] = [...sortObject.lessons.checkedWord]
+        const copy: IWordSortTutorial[] = [...sortObject.lesson.checkedWord]
 
         if(copy.length !== 0) {
             return setModal(!showModal)
@@ -222,10 +224,10 @@ const SortTutorial = () => {
                         </>
                         :
                         <>
-                            <div>
+                            
                                 <Typography>
                                     {
-                                        sortObject.lessons.arrWords.map((val) => {
+                                        sortObject.lesson.arrWords.map((val) => {
                                             return <span
                                                 style={!val.isDrable ? stockStyle : blurStyle}
                                                 key={val.id}
@@ -234,9 +236,9 @@ const SortTutorial = () => {
                                         })
                                     }
                                 </Typography>
-                            </div>
+                            
                             {
-                                sortObject.lessons.checkedWord.map((val) => {
+                                sortObject.lesson.checkedWord.map((val) => {
                                     return <Tags
                                         key={val.id}
                                         onClose={() => removeWord(val)}

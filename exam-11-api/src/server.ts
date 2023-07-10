@@ -1,8 +1,9 @@
 import express , {Express} from 'express';
-import sequelize from './config/db.config';
+import sequelize from '../config/db.config';
 import Test from './Controllers/Test'
 import cors from 'cors';
 import SortTutorialController from './Controllers/SortTutorial';
+import SortPicture from './Controllers/SortByPicture';
 
 const app:Express = express();
 const PORT        = 8000;
@@ -26,7 +27,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/' , Test)
 app.use('/sortTutorial' , SortTutorialController)
-
+app.use('/sortPicture' , SortPicture )
 
 
 run().catch(e => console.log(e));

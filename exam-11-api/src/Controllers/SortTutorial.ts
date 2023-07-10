@@ -1,15 +1,16 @@
-import sequelize from "@src/config/db.config";
-import SortTutorial from "@src/DTO/SortTutorial";
+import sequelize from "../../config/db.config";
+import LessonsDto from "@src/DTO/SortTutorial";
 import LessonsModel from "@src/Models/lessons";
 import { Router , Request , Response } from "express";
-
+import { SortPicture } from "@src/Interfaces/SortPicture";
+import { TutorialType } from "@src/Enum/Enum.tutorial.type";
 
 const SortTutorialController: Router = Router()
 
 
 SortTutorialController.get( '/' , async(req:Request , res:Response) => {
 
-    const response = await LessonsModel.findAll()
+    const response = await LessonsModel.findAll({where: {lesson_type :  TutorialType.wordsSort}})
     
     res.send(response)
 
@@ -17,7 +18,7 @@ SortTutorialController.get( '/' , async(req:Request , res:Response) => {
 
 SortTutorialController.post('/' , async(req:Request , res:Response) => {
 
-    const {title , description , lessons ,transit_time} = req.body as SortTutorial
+    const {title , description , lesson ,transit_time , lesson_type} = req.body as LessonsDto
 
     try {
         const copy: boolean = [ title , description , transit_time] 
@@ -29,7 +30,7 @@ SortTutorialController.post('/' , async(req:Request , res:Response) => {
             
         if(!copy) {
 
-            const tutorial = new SortTutorial(title , description , lessons ,transit_time)
+            const tutorial = new LessonsDto(title , description , lesson ,transit_time , lesson_type)
 
             const response = await LessonsModel.create({...tutorial})
     

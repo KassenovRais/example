@@ -1,11 +1,12 @@
 import { LeftCircleOutlined } from '@ant-design/icons'
-import {  Card, Col, Row, Tag, Typography } from 'antd'
+import {  Button, Card, Col, Modal, Row, Tag, Typography } from 'antd'
 import Countdown, { CountdownProps } from 'antd/es/statistic/Countdown'
 import Paragraph from 'antd/es/typography/Paragraph'
 import Title from 'antd/es/typography/Title'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useEffect, useState , DragEvent , CSSProperties} from 'react'
 import { ISortObject, IWordSortTutorial } from '../../../Interface/SortWords'
+import { buttonStyle } from '../../Teacher.container/SortWordsTutorial/StyleSortTutorial/Style.words'
 import { dragbleStyle, dragBlur, dragStyle, gridStyle, iconStyle  } from './StyleSortWords/Style.style.words'
 
 
@@ -22,6 +23,7 @@ const SortShowTutorial = () => {
 
     const [currentWord , setCurrentWord] = useState<{value: IWordSortTutorial , index:number}>()
 
+    const [start , setStart] = useState<boolean>(false)
   
     const getSortTutorial = async() => {
 
@@ -39,7 +41,13 @@ const SortShowTutorial = () => {
 
     const currentArrWords = (e:ISortObject) => {
 
-        setSortObject(e)
+        const copyArr: IWordSortTutorial[] = [...e.lesson.checkedWord]
+
+        copyArr.sort(()=>Math.random()-0.5)
+
+        
+
+        setSortObject({...e ,lesson: {...e.lesson , checkedWord: copyArr} })
 
         setCopyArr(e)
 
@@ -48,38 +56,38 @@ const SortShowTutorial = () => {
     const dropHandler = (e: DragEvent<HTMLSpanElement> , val:IWordSortTutorial , index: number ) => {
 
         e.preventDefault()
-        
+
         if (sortObject && currentWord) {
 
-            const include: boolean = sortObject.lessons.arrWords.includes(val)
+            const include: boolean = sortObject.lesson.arrWords.includes(val)
 
-            const includeWord : boolean = sortObject.lessons.arrWords.includes(currentWord.value)
+            const includeWord : boolean = sortObject.lesson.arrWords.includes(currentWord.value)
 
             const copy: ISortObject = {...sortObject}
 
-            if(include && includeWord) {
+            if(include && includeWord && val.isDrable) {
 
-                const copyCurrent:IWordSortTutorial =  sortObject.lessons.arrWords[currentWord.index]
+                const copyCurrent:IWordSortTutorial =  sortObject.lesson.arrWords[currentWord.index]
 
-                const copyByRemove :IWordSortTutorial =  sortObject.lessons.arrWords[index]
+                const copyByRemove :IWordSortTutorial =  sortObject.lesson.arrWords[index]
 
-                copy.lessons.arrWords.splice(index , 1 , copyCurrent)
+                copy.lesson.arrWords.splice(index , 1 , copyCurrent)
 
-                copy.lessons.arrWords.splice(currentWord.index , 1 , copyByRemove)
+                copy.lesson.arrWords.splice(currentWord.index , 1 , copyByRemove)
 
                 return setSortObject(copy)
             
             }
-            const includeChecked: boolean = sortObject.lessons.checkedWord.includes(val)
+            const includeChecked: boolean = sortObject.lesson.checkedWord.includes(val)
 
-            if(val.isDrable && !includeChecked) {
+            if( val.isDrable && !includeChecked) {
 
-                copy.lessons.arrWords[index] = {...copy.lessons.arrWords[index] , 
+                copy.lesson.arrWords[index] = {...copy.lesson.arrWords[index] , 
                     value: currentWord.value.value  , 
                     isDrable :true , 
                     styleHandler: false 
                 }          
-                copy.lessons.checkedWord[currentWord.index] = {...copy.lessons.checkedWord[currentWord.index] ,
+                copy.lesson.checkedWord[currentWord.index] = {...copy.lesson.checkedWord[currentWord.index] ,
                     isDrable: false
                 }      
 
@@ -141,7 +149,7 @@ const SortShowTutorial = () => {
 
                         <Typography style={{margin : '4vh  0'}} >
                             {
-                                sortObject.lessons.arrWords.map((val , index) => {
+                                sortObject.lesson.arrWords.map((val , index) => {
                                     return <span 
                                             key={val.id} 
                                             draggable={val.isDrable}
@@ -156,7 +164,7 @@ const SortShowTutorial = () => {
                             }
                         </Typography>
                         {                    
-                            sortObject.lessons.checkedWord.map((val , index) => {
+                            sortObject.lesson.checkedWord.map((val , index) => {
                                 return <Tag
                                         style={val.isDrable ? gridStyle : dragbleStyle} 
                                         color="#5BC0EB" 
@@ -171,13 +179,33 @@ const SortShowTutorial = () => {
                             })
                         }
                         <Col span={12} style={{margin : '3vh  0'}}>
-                            <Countdown title="Время для прохождения" value={Date.now() + Number(sortObject.transit_time) * 1000}/>
+                            <Countdown 
+                                
+                                title="Время для прохождения" 
+                                value={Date.now() + (start ? Number(sortObject.transit_time) : 0) * 1000}
+                                
+                            />
                         </Col>
+                        <Modal
+                            title="Задание"
+                            centered
+                            open={!start}
+                            width={600}
+                            footer={[<Button
+                                style={buttonStyle}
+                                onClick={() => setStart(!start)}
+                                >Старт</Button>]}
+                        >
+                            <Paragraph>
+                                Переместите слова в нужном порядке 
+                            </Paragraph>
+                        </Modal>
                     
                 </Card>
                 
                 )
             }
+            
             
             
         </div>

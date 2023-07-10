@@ -1,6 +1,5 @@
 import path from "path";
 
-export const rootPath = __dirname
+const rootPath = __dirname
 
-export const uploadPath = path.join(rootPath , `public/uploads/news`)
-
+export const uploadPictureByTutorial = path.join(rootPath , `public`)

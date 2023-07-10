@@ -1,5 +1,6 @@
-import sequelize from "@src/config/db.config";
+import sequelize from "../../config/db.config";
 import { DataTypes } from "sequelize";
+import { TutorialType } from "@src/Enum/Enum.tutorial.type";
 
 
 const LessonsModel = sequelize.define( 'lessons', {
@@ -11,14 +12,18 @@ const LessonsModel = sequelize.define( 'lessons', {
             type:DataTypes.STRING,
             allowNull: false
         },
-        lessons : {
+        lesson : {
             type:DataTypes.JSON,
             allowNull: false
         },
         transit_time: {
             type:DataTypes.STRING,
             allowNull: false
-        }
+        },
+        lesson_type: {
+            type:DataTypes.ENUM(TutorialType.pictureSort , TutorialType.wordsSort),
+            allowNull: false
+        } 
     },
     {
         timestamps: false

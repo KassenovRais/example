@@ -1,16 +1,22 @@
-export default class SortTutorial  {
+import { TutorialType } from "@src/Enum/Enum.tutorial.type"
+
+export default class LessonsDto  {
     title:string
     description :string
-    lessons :JSON
+    lesson :JSON
     transit_time :string
+    lesson_type : TutorialType
     constructor (title:string,
         description :string,
-        lessons :JSON,
-        transit_time :string) {
+        lesson :JSON,
+        transit_time :string,
+        lesson_type: TutorialType
+        ) {
             this.title = title
             this.description = description
-            this.lessons = lessons 
-            this.transit_time = transit_time 
+            this.lesson = lesson
+            this.transit_time = transit_time
+            this.lesson_type = lesson_type 
         
     }
     
