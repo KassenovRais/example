@@ -5,6 +5,7 @@ import Paragraph from 'antd/es/typography/Paragraph'
 import Title from 'antd/es/typography/Title'
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { useEffect, useState , DragEvent , CSSProperties} from 'react'
+import { TutorialType } from '../../../enum/Tutorial.type/Tutorial.type'
 import { ISortObject, IWordSortTutorial } from '../../../Interface/SortWords'
 import { buttonStyle } from '../../Teacher.container/SortWordsTutorial/StyleSortTutorial/Style.words'
 import { dragbleStyle, dragBlur, dragStyle, gridStyle, iconStyle  } from './StyleSortWords/Style.style.words'
@@ -29,9 +30,12 @@ const SortShowTutorial = () => {
 
         try {
 
-            const response = await axios.get<AxiosRequestConfig, AxiosResponse<ISortObject[]>>('http://localhost:8000/sortTutorial')
+            const response = await axios.get<AxiosRequestConfig, AxiosResponse<ISortObject[]>>('http://localhost:8000/tutorials')
         
-            setArrSort(response.data)
+            const copySortArray: ISortObject[] = response.data.filter((val) => {
+                return val.lesson_type === TutorialType.wordsSort
+            })
+            copySortArray && setArrSort(copySortArray)
 
         } catch (error) {
             

@@ -1,6 +1,7 @@
 import sequelize from "../../config/db.config";
 import { DataTypes } from "sequelize";
 import { TutorialType } from "@src/Enum/Enum.tutorial.type";
+import { UUID } from "sequelize";
 
 
 const LessonsModel = sequelize.define( 'lessons', {
@@ -26,7 +27,7 @@ const LessonsModel = sequelize.define( 'lessons', {
         } 
     },
     {
-        timestamps: false
+        timestamps: false,
     }
 )
 

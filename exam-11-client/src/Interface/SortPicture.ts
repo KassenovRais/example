@@ -17,5 +17,5 @@ export interface ITheme {
 export interface ItemPicture {
     id:string
     theme_id :string
-    picture: File 
+    picture: File | string
 }

@@ -11,6 +11,8 @@ import axios, { AxiosResponse, AxiosResponseHeaders } from 'axios'
 import { TutorialType } from '../../../enum/Tutorial.type/Tutorial.type'
 
 
+
+
 const SortByPicture = () => {
 
     const [messageApi, contextHolder] = message.useMessage();
@@ -25,6 +27,8 @@ const SortByPicture = () => {
         transit_time: '5655',
         lesson_type : TutorialType.pictureSort
     })
+
+    const [check , setCheck] = useState<Blob>()
 
     const messageBy = (message :string , type: MessageEnum) => {
         messageApi.open({
@@ -53,11 +57,11 @@ const SortByPicture = () => {
 
             if(file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/svg') {
                 
+
                 return setSortObject({...sortObject, lesson :{...sortObject.lesson , arrPicture: 
                     [...sortObject.lesson.arrPicture , 
                         {id: nanoid() , theme_id: id , picture : file}]}})
-                
-
+    
             }
             
             messageBy('Данное фото не корректного формата' , MessageEnum.error)
@@ -98,61 +102,47 @@ const SortByPicture = () => {
 
         let formData:FormData = new FormData() ;
 
-        const copySortObject: Omit<SortPicture , 'lessons'> = {...sortObject}
+        const copySortObject: SortPicture = {...sortObject}
 
-        sortObject.lesson.arrPicture.map((val) => {
-            for(let key in val) {
+        try {
 
-                formData.append(key, val[key as keyof typeof val]);
-
-            }
-                        
-        })
+            copySortObject.lesson.arrPicture.map((val) => {
+            
+                if(typeof val.picture !== 'string'){
+    
+                    const  file_name = nanoid() + '.' + val.picture.name.split('.').at(-1);
+    
+                    const  new_file = new File([val.picture], 
+                        file_name, 
+                        {type: val.picture.type});
+    
+                    const dataTransfer = new DataTransfer()               
+                    
+                    dataTransfer.items.add(new_file);
+    
+                    val.picture = dataTransfer.files[0].name
+    
+                    formData.append(`picture` , dataTransfer.files[0])
         
-
-
+                    return val
+                    
+                }
+                
+            })
+    
+            const response = await axios.post('http://localhost:8000/tutorials' , copySortObject )
+    
+            const responseDouble = await axios.post('http://localhost:8000/tutorials/save/picturearray' , formData)
         
-        
-        
-        const response = await axios.post('http://localhost:8000/sortPicture' , {
-            title: sortObject.title,
-            description :sortObject.description,
-            lesson: {
-                theme :sortObject.lesson.theme,
-                arrPicture :formData
-            },
-            transit_time : sortObject.transit_time,
-            lesson_type: sortObject.lesson_type,
-            formData
-     })        
-                     
+        } catch (error) {
+            console.log('Error FAQ');    
+        }         
     }
-
-
-    const getSortTutorial = async() => {
-        const response = await axios.get<AxiosResponseHeaders ,AxiosResponse <SortPicture[]>>('http://localhost:8000/sortPicture' )
-
-        const check = response.data[0].lesson.arrPicture[0].picture
-
-        const res:BlobPart = new Blob([check] , {type: 'image/jpeg'}) 
-        
-        console.log( check.type);
-        
-        setCheck(URL.createObjectURL(res));        
-
-    }
-    useEffect(() => {
-
-        // getSortTutorial()
-
-    }, [])
-
-    const [check , setCheck] = useState<string> ('')
 
     
     return (
         <>
-            <img src={check} width='100px' />
+            <img src={check ? URL.createObjectURL(check) : ''} width='100px' />
 
             <Form>  
                 <Typography>
@@ -207,7 +197,9 @@ const SortByPicture = () => {
                                                     <img      
                                                         style={pictureStyle}
                                                         src={
-                                                            URL.createObjectURL(pic.picture)
+                                                            typeof pic.picture !== 'string' ?  
+                                                            URL.createObjectURL(pic.picture) 
+                                                            : 'https://yt3.ggpht.com/ytc/AOPolaRDPxPNLIGR0XaWtsBf6K_wiaqL2ZP2kNiV590Klw=s88-c-k-c0x00ffffff-no-rj'
                                                         } 
                                                         
                                                     />
@@ -237,7 +229,7 @@ const SortByPicture = () => {
             >
                 SAVE
             </Button>
-
+            
         </>
     )
 }

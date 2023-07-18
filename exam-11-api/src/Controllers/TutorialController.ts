@@ -2,17 +2,19 @@ import { uploadPictureByTutorial } from "../../config";
 import LessonsDto from "@src/DTO/SortTutorial";
 import e, { Router , Request ,Response } from "express";
 import multer from "multer";
-import path from "path";
-import {nanoid} from 'nanoid'
 import LessonsModel from "@src/Models/lessons";
 import { TutorialType } from "@src/Enum/Enum.tutorial.type";
 
+
 const storage = multer.diskStorage({
-    destination: (req , file , cb ) => {        
-           cb(null, uploadPictureByTutorial)
+    destination: (req , file , cb ) => { 
+        
+        cb(null, uploadPictureByTutorial)
+
     },
     filename: (req, file , cb ) => {
-           cb(null , nanoid() + path.extname(file.originalname))
+
+        cb(null , file.originalname)
            
     }
 })
@@ -20,13 +22,9 @@ const storage = multer.diskStorage({
 const upload = multer({storage})
 
 
-const sortPicture:Router = Router()
+const TutorialController:Router = Router()
 
-sortPicture.post('/' ,upload.single('picture'),async(req:Request , res:Response) => {
-
-    // console.log(req.body);
-    
-
+TutorialController.post('/' ,async(req:Request , res:Response) => {    
 
     try {
 
@@ -46,11 +44,13 @@ sortPicture.post('/' ,upload.single('picture'),async(req:Request , res:Response)
 
 })
 
-sortPicture.get( '/' , async(req:Request , res:Response) => {
+
+
+TutorialController.get( '/' , async(req:Request , res:Response) => {
 
     try {
 
-        const response = await LessonsModel.findAll({where : {lesson_type :TutorialType.pictureSort}})
+        const response = await LessonsModel.findAll()
 
         res.send(response)
 
@@ -62,4 +62,14 @@ sortPicture.get( '/' , async(req:Request , res:Response) => {
 
 })
 
-export default sortPicture
+TutorialController.post('/save/picturearray' ,upload.array('picture') , (req:Request , res:Response ) => {
+
+    try {
+        res.send()
+    } catch (error) {
+        res.status(404).send('Message ')
+    }
+    
+})
+
+export default TutorialController

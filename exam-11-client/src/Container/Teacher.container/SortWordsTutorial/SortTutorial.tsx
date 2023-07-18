@@ -3,15 +3,13 @@ import TextArea from 'antd/es/input/TextArea'
 import Button from 'antd/es/button/button'
 import Tags from '../../../Component/Tag'
 import { nanoid } from 'nanoid'
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios from 'axios'
 import { ISortObject, IWordSortTutorial } from '../../../Interface/SortWords'
 import ModalByLessons from '../../../Component/ModalByLessons/Modal.by.lessons'
 import Typography from 'antd/es/typography/Typography'
 import dayjs from 'dayjs';
-import ValidetedFN from '../../../helper/Valideted.FN'
-import { Card, Col, message, Row, Space } from 'antd'
+import {  Col, message, Row } from 'antd'
 import { blurStyle, buttonStyle, stockStyle } from './StyleSortTutorial/Style.words'
-import { blob } from 'stream/consumers'
 import { TutorialType } from '../../../enum/Tutorial.type/Tutorial.type'
 
 
@@ -140,8 +138,9 @@ const SortTutorial = () => {
             
         try {
             if(!valideted) {
+                console.log(sortObject.lesson);
 
-                const response = await axios.post('http://localhost:8000/sortTutorial' ,            
+                const response = await axios.post('http://localhost:8000/tutorials' ,            
                     sortObject,
                 )  
                 
@@ -165,7 +164,7 @@ const SortTutorial = () => {
         }
     };
 
-    const cangeValue = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const cangeValue = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
 
         const {value , name} = e.target
 

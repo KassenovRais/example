@@ -5,10 +5,10 @@ interface IMessage extends Model   {
   message :Blob
 }
 
-const TestModel = sequelize.define<IMessage>('tests' , {
+const TestModel = sequelize.define<IMessage>('check' , {
   
-  message: {
-    type: DataTypes.JSON,
+  picture: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
  

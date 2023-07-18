@@ -1,22 +1,41 @@
-import sequelize from "../../config/db.config";
 import LessonsDto from "@src/DTO/SortTutorial";
 import LessonsModel from "@src/Models/lessons";
 import { Router , Request , Response } from "express";
-import { SortPicture } from "@src/Interfaces/SortPicture";
 import { TutorialType } from "@src/Enum/Enum.tutorial.type";
+import multer from "multer";
+import { uploadPictureByTutorial } from "config";
 
-const SortTutorialController: Router = Router()
+const storage = multer.diskStorage({
+    destination: (req , file , cb ) => { 
+        
+        cb(null, uploadPictureByTutorial)
+
+    },
+    filename: (req, file , cb ) => {
+
+        cb(null , file.originalname)
+           
+    }
+})
+
+const upload = multer({storage})
+
+const TutorialController: Router = Router()
 
 
-SortTutorialController.get( '/' , async(req:Request , res:Response) => {
+TutorialController.get( '/' , async(req:Request , res:Response) => {
 
-    const response = await LessonsModel.findAll({where: {lesson_type :  TutorialType.wordsSort}})
+    try {
+        const response = await LessonsModel.findAll({where: {lesson_type :  TutorialType.wordsSort}})
     
-    res.send(response)
+        res.send(response)
+    } catch (error) {
+        res.status(404).send('FUK')
+    }
 
 })
 
-SortTutorialController.post('/' , async(req:Request , res:Response) => {
+TutorialController.post('/' , async(req:Request , res:Response) => {
 
     const {title , description , lesson ,transit_time , lesson_type} = req.body as LessonsDto
 
@@ -48,5 +67,14 @@ SortTutorialController.post('/' , async(req:Request , res:Response) => {
 
 
 })
+TutorialController.post('/save/picturearray' ,upload.array('picture') , (req:Request , res:Response ) => {
 
-export default SortTutorialController
+    try {
+        res.send()
+    } catch (error) {
+        res.status(404).send('Message ')
+    }
+    
+})
+
+export default TutorialController

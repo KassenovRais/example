@@ -5,6 +5,8 @@ import SortShowTutorial from './Container/Student.container/SortWordsTutorial/So
 import SortByPicture from './Container/Teacher.container/SortByPicture/SortByPicture';
 import SortTutorial from './Container/Teacher.container/SortWordsTutorial/SortTutorial';
 import './App.css'
+import TestCheck from './Container/Test.container/Test.Check';
+import SortShowPictureTutorial from './Container/Student.container/SortPictureTutorial/SortShowPictureTutorial';
 
 function App() {
 
@@ -19,11 +21,13 @@ function App() {
             <Route index element={<SortTutorial/>} />
             <Route path='/show' element={<SortShowTutorial/>} />
             <Route path='/sort' element={<SortByPicture/>} />
-            <Route path='/showSort' element={<h2>awdad</h2>}/>
+            <Route path='/showSort' element={<SortShowPictureTutorial/>}/>
           </Route>
         </Routes>
       
       </BrowserRouter>
+
+      {/* <TestCheck/> */}
     </>
   );
 }
